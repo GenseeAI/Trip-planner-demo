@@ -1,10 +1,10 @@
-# Compass Chat
+# Trip planner demo
 
 A modern travel planning application built with React, TypeScript, and Tailwind CSS.
 
 ## Project Overview
 
-Compass Chat is an interactive travel planning application that helps users create and manage their travel itineraries. The application features an AI-powered chat interface for trip planning and an interactive globe for destination exploration. 
+Gensee Trip is an interactive travel planning application that helps users create and manage their travel itineraries. The application features an AI-powered chat interface for trip planning and an interactive globe for destination exploration. 
 
 ## Technologies Used
 
@@ -31,7 +31,7 @@ This project is built with:
 1. Clone the repository:
 ```bash
 git clone <REPOSITORY_URL>
-cd compass-chat
+cd trip-planner-demo
 ```
 
 2. Install dependencies:
@@ -39,11 +39,12 @@ cd compass-chat
 npm install
 ```
 
-3. Start the development server:
+3. Add the Secret key and optimization profiles to the `/src/config/api.ts file`
+
+4. Start the development server:
 ```bash
 npm run dev
 ```
-4. Add the Secret key and optimization profiles to the `/src/config/api.ts file`
 
 5. Open your browser and navigate to `http://localhost:8080`
 
