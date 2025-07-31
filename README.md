@@ -39,7 +39,7 @@ cd trip-planner-demo
 npm install
 ```
 
-3. Go To `https://platform.gensee.ai` and deploy the workflows QA with search and trip-planner workflow.
+3. Go To [GenseeAI platform](https://platform.gensee.ai) and deploy the workflows QA with search and trip-planner workflow.
 
 4. Create a .env file in the root directory, the .env file should look like this. Copy your secrets for the workflows from GenseeAI into the .env file.
 ```
