@@ -1,16 +1,8 @@
-import { getApiConfig } from '../config/api';
+// Backend API Service
+// Makes requests to backend endpoints which handle external API configuration
 
-// API configuration and types
-interface ItineraryAPIRequest {
-  workflow_id: string;
-  workflow_secret: string;
-  workflow_input: {
-    travel_request: string;
-  };
-  selected_optimization_profile: string;
-}
-
-interface ItineraryAPIResponse {
+// Common API response structure 
+interface BaseAPIResponse {
   status: string;
   response: string;
   stdout: string;
@@ -18,24 +10,34 @@ interface ItineraryAPIResponse {
   error_code: number;
 }
 
-/**
- * Generate itinerary using the external API
- * @param travelRequest - The processed travel request string
- * @returns Promise<string> - The generated itinerary in markdown format
- */
-export const generateItineraryFromAPI = async (travelRequest: string): Promise<string> => {
-  try {
-    const config = getApiConfig();
-    const requestData: ItineraryAPIRequest = {
-      workflow_id: config.ITINERARY.WORKFLOW_ID,
-      workflow_secret: config.ITINERARY.WORKFLOW_SECRET,
-      workflow_input: {
-        travel_request: travelRequest,
-      },
-      selected_optimization_profile: config.ITINERARY.OPTIMIZATION_PROFILE,
-    };
+interface ItineraryRequest {
+  travel_request: string;
+}
 
-    const response = await fetch(`${config.HOST}/execute/serve`, {
+export interface ItineraryAPIResponse extends BaseAPIResponse {}
+
+interface ChatRequest {
+  question: string;
+  itinerary_context?: string;
+}
+
+export interface ChatAPIResponse extends BaseAPIResponse {}
+
+// Backend configuration 
+const BACKEND_CONFIG = {
+  BASE_URL: import.meta.env.VITE_BACKEND_URL,
+  ENDPOINTS: {
+    ITINERARY: '/api/itinerary',
+    CHAT: '/api/chat'
+  }
+};
+
+const callBackendAPI = async <TRequest, TResponse extends BaseAPIResponse>(
+  endpoint: string,
+  requestData: TRequest
+): Promise<TResponse> => {
+  try {
+    const response = await fetch(`${BACKEND_CONFIG.BASE_URL}${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -44,15 +46,39 @@ export const generateItineraryFromAPI = async (travelRequest: string): Promise<s
     });
 
     if (!response.ok) {
-      throw new Error(`API request failed with status: ${response.status}`);
+      throw new Error(`Backend request failed with status: ${response.status}`);
     }
 
-    const data: ItineraryAPIResponse = await response.json();
+    const data: TResponse = await response.json();
     
     // Handle API response - check for errors first
     if (data.error_code !== 0) {
-      throw new Error(`API Error (code ${data.error_code}): ${data.stderr || 'Unknown error'}`);
+      throw new Error(`Backend Error (code ${data.error_code}): ${data.stderr || 'Unknown error'}`);
     }
+    
+    return data;
+    
+  } catch (error) {
+    console.error('Error calling backend API:', error);
+    throw new Error(`Failed to call backend API: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+};
+
+/**
+ * Generate itinerary using the backend API
+ * @param travelRequest - The travel request string
+ * @returns Promise<string> - The generated itinerary in markdown format
+ */
+export const generateItineraryFromAPI = async (travelRequest: string): Promise<string> => {
+  try {
+    const requestData: ItineraryRequest = {
+      travel_request: travelRequest,
+    };
+
+    const data = await callBackendAPI<ItineraryRequest, ItineraryAPIResponse>(
+      BACKEND_CONFIG.ENDPOINTS.ITINERARY,
+      requestData
+    );
     
     // Return the response field which contains the itinerary
     if (data.response) {
@@ -62,21 +88,53 @@ export const generateItineraryFromAPI = async (travelRequest: string): Promise<s
     // Fallback if response is empty
     return `# No Itinerary Generated
 
-The API call was successful but no itinerary was returned.
+The backend call was successful but no itinerary was returned.
 
 **Travel Request:** ${travelRequest}
 
 **Status:** ${data.status}`;
     
   } catch (error) {
-    console.error('Error calling itinerary API:', error);
-    throw new Error(`Failed to generate itinerary via API: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error('Error calling itinerary backend API:', error);
+    throw new Error(`Failed to generate itinerary via backend: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 };
 
 /**
- * Test the API connection
- * @returns Promise<boolean> - True if API is accessible
+ * Send a chat message to the backend API
+ * @param question - The user's question/message
+ * @param itineraryContext - Optional itinerary context to provide to the AI
+ * @returns Promise<string> - The AI's response
+ */
+export const sendChatMessageToAPI = async (question: string, itineraryContext?: string): Promise<string> => {
+  try {
+    const requestData: ChatRequest = {
+      question: question,
+      ...(itineraryContext && { itinerary_context: itineraryContext })
+    };
+
+    const data = await callBackendAPI<ChatRequest, ChatAPIResponse>(
+      BACKEND_CONFIG.ENDPOINTS.CHAT,
+      requestData
+    );
+    
+    // Return the response field which contains the AI's reply
+    if (data.response) {
+      return data.response;
+    }
+    
+    // Fallback if response is empty
+    return "I'm sorry, I couldn't generate a response at the moment. Please try again.";
+    
+  } catch (error) {
+    console.error('Error calling chat backend API:', error);
+    throw new Error(`Failed to send chat message: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+};
+
+/**
+ * Test the backend connection for itinerary generation
+ * @returns Promise<boolean> - True if backend is accessible
  */
 export const testAPIConnection = async (): Promise<boolean> => {
   try {
@@ -84,7 +142,22 @@ export const testAPIConnection = async (): Promise<boolean> => {
     await generateItineraryFromAPI(testRequest);
     return true;
   } catch (error) {
-    console.error('API connection test failed:', error);
+    console.error('Backend connection test failed:', error);
+    return false;
+  }
+};
+
+/**
+ * Test the chat backend connection
+ * @returns Promise<boolean> - True if backend is accessible
+ */
+export const testChatAPIConnection = async (): Promise<boolean> => {
+  try {
+    const testQuestion = "Hello, can you help me with travel planning?";
+    await sendChatMessageToAPI(testQuestion);
+    return true;
+  } catch (error) {
+    console.error('Chat backend connection test failed:', error);
     return false;
   }
 }; 

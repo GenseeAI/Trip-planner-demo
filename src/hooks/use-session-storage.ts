@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { SavedItinerary } from '@/services/itineraryService';
 
-const STORAGE_KEY = 'compass-chat-itineraries';
+const STORAGE_KEY = 'Gensee-Trip-itineraries';
 
 export const useSessionStorage = () => {
   const [savedItineraries, setSavedItineraries] = useState<SavedItinerary[]>([]);

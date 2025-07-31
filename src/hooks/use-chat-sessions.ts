@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChatMessage, ChatSession, ItineraryChats, ChatExchange } from '@/types/chat';
 
-const STORAGE_KEY = 'compass-chat-sessions';
+const STORAGE_KEY = 'Gensee-Trip-sessions';
 
 // Helper function to truncate text
 const truncateText = (text: string, maxLength: number = 50): string => {
