@@ -39,7 +39,21 @@ cd trip-planner-demo
 npm install
 ```
 
-3. Add the Secret key and optimization profiles to the `/src/config/api.ts file`
+3. Create a .env file in the root directory, the .env file should look like this 
+```
+# API Host
+VITE_API_HOST=https://platform.gensee.ai
+
+# Itinerary Configuration
+VITE_ITINERARY_WORKFLOW_ID=your_itinerary_workflow_id
+VITE_ITINERARY_WORKFLOW_SECRET=your_itinerary_workflow_secret
+VITE_ITINERARY_OPTIMIZATION_PROFILE=your_optimization_profile
+
+# Chat Configuration
+VITE_CHAT_WORKFLOW_ID=your_chat_workflow_id
+VITE_CHAT_WORKFLOW_SECRET=your_chat_workflow_secret
+VITE_CHAT_MODEL_OVERRIDE=your_model_override
+```
 
 4. Start the development server:
 ```bash
