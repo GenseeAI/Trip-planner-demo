@@ -17,7 +17,7 @@ Easy serving and deploy with a few clicks without needing you to modify or annot
 - Trip planning Agent: An agent society built with CamelAI.
 ![trip-planning-agent](public/readme-images/Trip-planner.excalidraw.svg)
 
--QA Agent: A real-time knowledge agent powered by search tools.
+- QA Agent: A real-time knowledge agent powered by search tools.
 ![qa-agent](public/readme-images/qa_with_search.svg)
 
 
