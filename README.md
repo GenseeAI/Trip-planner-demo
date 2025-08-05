@@ -1,11 +1,27 @@
 # Trip planner demo
 
-A modern travel planning application built with React, TypeScript, and Tailwind CSS.
+An AI-agent-backed travel-planning web app built with CamelAI, Python, React, TypeScript, and Tailwind CSS.
 
 ## Project Overview
 
 Gensee Trip is an interactive travel planning application that helps users create and manage their travel itineraries. The application features an AI-powered chat interface for trip planning and an interactive globe for destination exploration. 
 
+## Agents Involved 
+
+This branch demonstrates how easy you could involve GenseeAI into your AI workflow!
+
+You could test this version powered by GenseeAI at [Trip-planner-demo](https://demo.gensee.ai/trip-planner/)
+
+Easy serving and deploy with a few clicks without needing you to modify or annotate your code. The agents build and served on Gensee AI could be seen under the **agents** folder. The attached diagram shows how agents work together and act as a workflow serving your own needs.
+
+- Trip planning Agent: An agent society built with CamelAI.
+![trip-planning-agent](public/readme-images/Trip-planner.excalidraw.svg)
+
+- QA Agent: A real-time knowledge agent powered by search tools.
+![qa-agent](public/readme-images/qa_with_search.svg)
+
+
+### If you find this interesting, feel free to check out [GenseeAI](https://www.gensee.ai/) and the [Serving Platform](https://platform.gensee.ai/)
 ## Technologies Used
 
 This project is built with:
